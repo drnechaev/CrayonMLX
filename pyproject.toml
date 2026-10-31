@@ -1,0 +1,42 @@
+[project]
+name = "crayonmlx"
+version = "0.1.0a1"
+description = "Local MLX studio for bringing drawings to life on Apple Silicon"
+readme = "README.md"
+authors = [
+    { name = "Nikolay Nechaev", email = "godlikeguest@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "mflux>=0.24,<0.25",
+    "fastapi>=0.162.0",
+    "huggingface-hub>=1.1.6,<2",
+    "pillow>=13.0.0",
+    "platformdirs>=4.14.0",
+    "python-multipart>=0.0.33",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+crayonmlx = "crayonmlx.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

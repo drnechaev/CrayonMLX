@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CrayonMLX · Рисунки оживают</title>
+    <link rel="stylesheet" href="/static/style.css?v=4" />
+    <script type="module" src="/static/app.js?v=4"></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/"
+        >crayonmlx<span>Локальная студия воображения</span></a
+      >
+      <nav aria-label="Разделы">
+        <button class="active" data-tab="studio">Студия</button
+        ><button data-tab="presets">Пресеты</button
+        ><button data-tab="history">История</button
+        ><button data-tab="models">Модели</button
+        ><button data-tab="settings">Настройки</button>
+      </nav>
+      <span class="local"><i></i> На вашем Mac</span>
+    </header>
+    <main>
+      <section id="studio" class="tab active">
+        <div class="intro">
+          <span class="eyebrow">ИЗ МАЛЕНЬКОГО РИСУНКА — В БОЛЬШОЙ МИР</span>
+          <h1>
+            Пусть воображение оживёт<span
+              ><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9Z" /></svg
+            ></span>
+          </h1>
+          <p>
+            Загрузите рисунок, выберите историю — и создайте что-то
+            удивительное.
+          </p>
+        </div>
+        <div class="workspace">
+          <div class="canvas-column">
+            <div class="comparison">
+              <article class="image-card">
+                <div class="card-heading">
+                  <h2>01 <span>Ваш рисунок</span></h2>
+                  <label class="text-button" for="image">Выбрать файл</label>
+                </div>
+                <label class="upload" id="dropzone" for="image"
+                  ><img id="source-preview" alt="Загруженный рисунок" hidden />
+                  <div id="upload-hint">
+                    <span class="upload-icon"
+                      ><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 16V3m-5 5 5-5 5 5M5 15v6h14v-6" /></svg
+                    ></span>
+                    <h3>Всё начинается с рисунка</h3>
+                    <p>Перетащите его сюда<br />или нажмите, чтобы выбрать</p>
+                    <small>PNG, JPEG, WebP · до 20 МБ</small>
+                  </div></label
+                ><input
+                  id="image"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  hidden
+                />
+              </article>
+              <article class="image-card">
+                <div class="card-heading">
+                  <h2>02 <span>Новая история</span></h2>
+                  <a id="download-result" class="text-button" hidden>Скачать</a>
+                </div>
+                <div class="result" id="result">
+                  <img
+                    id="result-preview"
+                    alt="Результат преобразования"
+                    hidden
+                  />
+                  <div id="result-hint">
+                    <span class="spark"
+                      ><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9Z"
+                        /></svg
+                    ></span>
+                    <h3>Здесь появится немного волшебства</h3>
+                    <p>У каждого рисунка есть новая история</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+            <div
+              class="status-strip"
+              role="status"
+              aria-live="polite"
+              id="render-status"
+            >
+              Все преобразования выполняются локально. Рисунок остаётся на вашем
+              Mac.
+            </div>
+            <div id="render-progress" hidden>
+              <progress
+                id="step-progress"
+                max="100"
+                value="0"
+                aria-label="Прогресс генерации"
+              ></progress>
+              <p
+                id="step-label"
+                class="hint"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </div>
+            <div class="panel prompt-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">КОНСТРУКТОР ИЗМЕНЕНИЙ</span>
+                  <h2>Что изменить в рисунке?</h2>
+                </div>
+                <button id="toggle-prompt" class="subtle">
+                  Показать итоговый промпт
+                </button>
+              </div>
+              <p class="hint">
+                Выбирайте независимо: стиль, героев, фон, композицию и свет. «Не
+                менять» убирает дополнительные указания блока. Ниже отметьте
+                детали, которые нужно сохранить.
+              </p>
+              <div id="blocks"></div>
+              <pre id="composed-prompt" hidden></pre>
+            </div>
+          </div>
+          <aside class="panel controls">
+            <span class="eyebrow">НАСТРОЙКИ ПРЕВРАЩЕНИЯ</span>
+            <h2>Какой будет история?</h2>
+            <label>Пресет<select id="preset"></select></label>
+            <p class="hint">
+              Редактирование и сохранение — во вкладке «Пресеты».
+            </p>
+            <label
+              >Конфиг генерации<select id="generation-config"></select
+            ></label>
+            <div class="divider"></div>
+            <label>Модель<select id="model"></select></label>
+            <p class="hint" id="model-hint"></p>
+            <details open>
+              <summary>Параметры генерации</summary>
+              <div class="parameter-grid">
+                <label
+                  >Шаги<input
+                    id="steps"
+                    type="number"
+                    min="1"
+                    max="150" /></label
+                ><label
+                  >Guidance<input
+                    id="guidance"
+                    type="number"
+                    min="0"
+                    max="30"
+                    step="0.1" /></label
+                ><label
+                  >Ширина<input
+                    id="width"
+                    type="number"
+                    min="256"
+                    max="2048"
+                    step="16" /></label
+                ><label
+                  >Высота<input
+                    id="height"
+                    type="number"
+                    min="256"
+                    max="2048"
+                    step="16"
+                /></label>
+              </div>
+              <label
+                >Image strength<input
+                  id="image_strength"
+                  type="number"
+                  min="0.01"
+                  max="1"
+                  step="0.01"
+              /></label>
+              <p class="hint" id="strength-hint"></p>
+              <label
+                >Seed <small>-1 — случайный</small
+                ><input
+                  id="seed"
+                  type="number"
+                  min="-1"
+                  max="4294967295" /></label
+              ><label
+                >Квантизация<select id="quantize">
+                  <option value="none">None — без квантизации</option>
+                  <option value="4">4 bit</option>
+                  <option value="8">8 bit</option>
+                </select></label
+              >
+            </details>
+            <button id="generate" class="primary">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9Z" />
+              </svg>
+              Оживить рисунок</button
+            ><small class="hint"
+              >Время и объём памяти зависят от модели и размера
+              изображения.</small
+            >
+          </aside>
+        </div>
+      </section>
+      <section id="presets" class="tab">
+        <div class="page-heading">
+          <span class="eyebrow">БИБЛИОТЕКА СТУДИИ</span>
+          <h1>Пресеты и заготовки</h1>
+          <p>
+            Сохраняйте тексты, наборы параметров и полные истории. Изменения не
+            затрагивают прошлые генерации.
+          </p>
+        </div>
+        <div class="library-tabs" role="group" aria-label="Тип библиотеки">
+          <button class="subtle active" data-library="full">
+            Полные пресеты</button
+          ><button class="subtle" data-library="prompts">
+            Заготовки промптов</button
+          ><button class="subtle" data-library="configs">
+            Конфиги генерации
+          </button>
+        </div>
+        <div id="preset-editor"></div>
+      </section>
+      <section id="history" class="tab">
+        <div class="page-heading">
+          <span class="eyebrow">ВАША КОЛЛЕКЦИЯ</span>
+          <h1>Истории рисунков</h1>
+          <p>Исходники, результаты и все параметры каждого превращения.</p>
+        </div>
+        <div id="history-list" class="history-grid"></div>
+        <button id="more-history" class="subtle" hidden>Показать ещё</button>
+      </section>
+      <section id="models" class="tab">
+        <div class="page-heading">
+          <span class="eyebrow">ИНСТРУМЕНТЫ ВООБРАЖЕНИЯ</span>
+          <h1>Модели на вашем Mac</h1>
+          <p>
+            Положите полный checkpoint в папку моделей или скачайте его с
+            Hugging Face.
+          </p>
+        </div>
+        <div class="two-columns">
+          <article class="panel">
+            <div class="panel-heading">
+              <h2>Локальные модели</h2>
+              <button id="refresh-models" class="subtle">Обновить</button>
+            </div>
+            <p id="models-path" class="path"></p>
+            <div id="model-list"></div>
+            <p class="hint">
+              Каждая модель — отдельная папка с конфигурацией, transformer, VAE
+              и энкодерами. Поддерживаются полные Diffusers / MFLUX checkpoints
+              для FLUX.1 и Qwen Image Edit. Для HF cache выберите папку
+              конкретного snapshot.
+            </p>
+          </article>
+          <article class="panel">
+            <h2>Скачать с Hugging Face</h2>
+            <form id="download-form">
+              <label
+                >Готовая модель
+                <select id="hf-preset">
+                  <option value="">Свой репозиторий</option>
+                  <optgroup label="Qwen Image Edit">
+                    <option value="Qwen/Qwen-Image-Edit-2511">
+                      Qwen Image Edit 2511
+                    </option>
+                    <option value="Qwen/Qwen-Image-Edit-2509">
+                      Qwen Image Edit 2509
+                    </option>
+                  </optgroup>
+                  <optgroup label="FLUX.1">
+                    <option value="black-forest-labs/FLUX.1-schnell">
+                      FLUX.1 Schnell
+                    </option>
+                    <option value="black-forest-labs/FLUX.1-dev">
+                      FLUX.1 Dev
+                    </option>
+                    <option value="black-forest-labs/FLUX.1-Krea-dev">
+                      FLUX.1 Krea Dev
+                    </option>
+                  </optgroup>
+                </select>
+              </label>
+              <label
+                >Repository ID<input
+                  id="hf-repo"
+                  placeholder="Qwen/Qwen-Image-Edit-2511"
+                  required /></label
+              ><label
+                >Ревизия<input id="hf-revision" value="main" required
+              /></label>
+              <p class="hint">
+                Полный репозиторий будет скачан в папку моделей. Токен для
+                закрытых моделей задаётся в настройках. Условия доступа
+                принимаются на сайте HF.
+              </p>
+              <button class="primary">Скачать модель</button>
+            </form>
+            <div id="download-list"></div>
+          </article>
+        </div>
+      </section>
+      <section id="settings" class="tab">
+        <div class="page-heading">
+          <span class="eyebrow">ВАШЕ ПРОСТРАНСТВО</span>
+          <h1>Настройки студии</h1>
+        </div>
+        <form id="settings-form" class="panel settings-panel">
+          <label for="models-dir">Папка моделей</label>
+          <div class="folder-field">
+            <input
+              id="models-dir"
+              required
+              placeholder="/Users/you/Models"
+            /><button
+              type="button"
+              class="subtle"
+              data-folder-target="models_dir"
+              aria-label="Выбрать папку моделей"
+            >
+              Выбрать…
+            </button>
+          </div>
+          <p class="hint">
+            Скачанные и добавленные вручную модели доступны из этой папки.
+          </p>
+          <label for="output-dir">Папка результатов</label>
+          <div class="folder-field">
+            <input
+              id="output-dir"
+              required
+              placeholder="/Volumes/Art/CrayonMLX"
+            /><button
+              type="button"
+              class="subtle"
+              data-folder-target="output_dir"
+              aria-label="Выбрать папку результатов"
+            >
+              Выбрать…
+            </button>
+          </div>
+          <p class="hint">
+            Можно выбрать любую доступную папку. Старые записи истории сохраняют
+            прежние пути.
+          </p>
+          <label
+            >Hugging Face token<input
+              id="hf-token"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Оставьте пустым, чтобы не менять"
+          /></label>
+          <p id="token-status" class="hint"></p>
+          <label class="checkbox"
+            ><input id="remove-token" type="checkbox" /> Удалить сохранённый
+            токен</label
+          >
+          <p class="hint">
+            Токен хранится локально в файле с доступом только вашему
+            пользователю и не возвращается в браузер.
+          </p>
+          <div class="divider"></div>
+          <label
+            >Выгружать модель после простоя (минуты)<input
+              id="model-idle-minutes"
+              type="number"
+              min="1"
+              max="10080"
+              value="15" /></label
+          ><label class="checkbox"
+            ><input id="keep-model-loaded" type="checkbox" />None — не выгружать
+            автоматически</label
+          >
+          <p class="hint">
+            По умолчанию 15 минут после окончания последней генерации.
+          </p>
+          <div class="divider"></div>
+          <button class="primary">Сохранить настройки</button>
+        </form>
+        <form id="storage-form" class="panel settings-panel storage-panel">
+          <h2>Внутренние данные</h2>
+          <p class="hint">
+            Настройки, пресеты, конфиги, история и HF-токен. Модели и
+            изображения останутся по прежним путям.
+          </p>
+          <label for="data-dir">Папка внутренних данных</label>
+          <div class="folder-field">
+            <input id="data-dir" required /><button
+              type="button"
+              class="subtle"
+              data-folder-target="data_dir"
+              aria-label="Выбрать папку внутренних данных"
+            >
+              Выбрать…
+            </button>
+          </div>
+          <p class="hint" id="storage-status">
+            Перенос в пустую папку применяется после перезапуска. Исходная копия
+            сохраняется. После переноса работа приостановится до перезапуска.
+          </p>
+          <button class="primary">Перенести данные</button>
+        </form>
+      </section>
+    </main>
+    <div id="toast" role="alert" hidden></div>
+    <footer>
+      CrayonMLX <span>Сделано для маленьких художников и больших идей.</span
+      ><span>Apple Silicon · Local first</span>
+    </footer>
+  </body>
+</html>
