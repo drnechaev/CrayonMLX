@@ -1,0 +1,27 @@
+{
+  "description": "Animated-film rendering with a replacement South Korean mountain background. Some details, including hair color, were reinterpreted by the model.",
+  "model_repository": "Qwen/Qwen-Image-Edit-2509",
+  "preset": {
+    "name": "Реалистичная живопись",
+    "engine": "mflux-qwen-edit",
+    "base_model": "qwen-image-edit",
+    "blocks": {
+      "style": "Transform the uploaded drawing into a polished Pixar-style 3D animated-film illustration. Use appealing sculpted forms, expressive existing characters, tactile materials, nuanced color design, soft global illumination, and cinematic depth. Give buildings, animals, and objects the same care as people. Preserve the original subject and arrangement without adding a new protagonist or anthropomorphizing objects.\n\nUse the uploaded image as the source of truth for the subject and composition. Preserve the actual characters, animals, buildings, objects, clothing, colors, poses, and their arrangement shown in this image.\n\nIf the drawing contains a house or landscape, make that house or landscape the main subject. Include people or animals only when they are present in the uploaded drawing. Preserve distinctive details and decorations.\n\nDo not introduce a new protagonist, cat ears, lavender hair, or any other character features unless they are visible in the uploaded image. Do not add franchise characters, new objects, text, logos, or watermarks. Preserve any intentional lettering or decorations already present in the drawing.\n\nCreate a complete finished scene, preserving the imagination and personality of the original drawing.",
+      "subject": "",
+      "background": "Place her in a beautiful South Korean mountain landscape: dramatic granite peaks, forested slopes, graceful pine trees, flowering azaleas, and a clear rocky stream with small waterfalls. She stands on a sunlit stone path beside the water. Add soft mountain mist and warm afternoon sunlight.",
+      "composition": "",
+      "constraints": ""
+    },
+    "parameters": {
+      "guidance": 2.5,
+      "image_strength": 0.65,
+      "steps": 30,
+      "width": 768,
+      "height": 1024,
+      "seed": 1811426623,
+      "quantize": null
+    }
+  },
+  "prompt": "Transform the uploaded drawing into a polished Pixar-style 3D animated-film illustration. Use appealing sculpted forms, expressive existing characters, tactile materials, nuanced color design, soft global illumination, and cinematic depth. Give buildings, animals, and objects the same care as people. Preserve the original subject and arrangement without adding a new protagonist or anthropomorphizing objects.\n\nUse the uploaded image as the source of truth for the subject and composition. Preserve the actual characters, animals, buildings, objects, clothing, colors, poses, and their arrangement shown in this image.\n\nIf the drawing contains a house or landscape, make that house or landscape the main subject. Include people or animals only when they are present in the uploaded drawing. Preserve distinctive details and decorations.\n\nDo not introduce a new protagonist, cat ears, lavender hair, or any other character features unless they are visible in the uploaded image. Do not add franchise characters, new objects, text, logos, or watermarks. Preserve any intentional lettering or decorations already present in the drawing.\n\nCreate a complete finished scene, preserving the imagination and personality of the original drawing.\n\nPlace her in a beautiful South Korean mountain landscape: dramatic granite peaks, forested slopes, graceful pine trees, flowering azaleas, and a clear rocky stream with small waterfalls. She stands on a sunlit stone path beside the water. Add soft mountain mist and warm afternoon sunlight.",
+  "note": "The Qwen Image Edit adapter does not apply image_strength. Runtime and memory requirements vary by hardware."
+}

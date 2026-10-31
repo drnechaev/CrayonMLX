@@ -1,8 +1,10 @@
 [project]
 name = "crayonmlx"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = "Local MLX studio for bringing drawings to life on Apple Silicon"
-readme = "README.md"
+readme = "packaging/README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "Nikolay Nechaev", email = "godlikeguest@gmail.com" }
 ]

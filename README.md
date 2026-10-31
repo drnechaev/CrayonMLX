@@ -5,13 +5,36 @@ Choose what to change: rendering style, characters, background, framing, and lig
 Keep the child's original ideas and explicitly protect the details that matter.
 Python + FastAPI, plain HTML/CSS/JavaScript, native MLX inference through MFLUX.
 
-**Early alpha.** The UI and orchestration are tested independently of model weights.
-Actual image quality, memory requirements and checkpoint compatibility depend on your model.
+## Example: drawing → animated illustration
+
+An actual local generation using **Qwen Image Edit 2509** through MFLUX.
+
+| Original drawing | Generated illustration |
+| :---: | :---: |
+| <img src="assets/examples/character-redesign/source.png" alt="Original pencil drawing of a waving child in front of a house" height="360"> | <img src="assets/examples/character-redesign/result.png" alt="Generated 3D character in a red sweater waving beside a mountain stream" height="360"> |
+
+The prompt requests an animated-film appearance and replaces the background with a
+South Korean mountain landscape. The red sweater, blue trousers, and waving gesture
+remain recognizable; some details, including hair color, were reinterpreted by the model.
+
+30 steps · guidance 2.5 · 768 × 1024 · seed `1811426623` · requested quantization: None.
+See the [full prompt and parameters](assets/examples/character-redesign/generation.json).
+
+**Early alpha.** Image quality, memory requirements, and checkpoint compatibility
+depend on your model. Automated tests cover the UI backend and orchestration using
+an injected renderer; they do not benchmark model inference.
 
 ## Install and run
 
 Requires an Apple Silicon Mac, macOS compatible with MLX, and [uv](https://docs.astral.sh/uv/).
-From a checkout:
+Install the published alpha:
+
+```sh
+uv tool install 'crayonmlx==0.1.0a1'
+crayonmlx
+```
+
+Or install the current source from a checkout:
 
 ```sh
 uv tool install .
@@ -19,8 +42,7 @@ crayonmlx
 ```
 
 Open http://127.0.0.1:8787. Choose another port with `crayonmlx --port 8788`.
-After the package is published, installation will be `uv tool install crayonmlx`.
-The project is not published yet. MFLUX libraries are installed with the app;
+MFLUX libraries are installed with the app;
 model weights are **not** bundled or downloaded at startup.
 
 For development:
@@ -175,11 +197,17 @@ Builds include frontend assets and expose the `crayonmlx` command for `uv tool i
 
 See [PUBLISHING.md](PUBLISHING.md) for the maintainer guide: local build verification,
 TestPyPI rehearsal, PyPI publication, and installation with `uv tool`.
-The package has not been published by this setup process.
+The package description shown on [PyPI](https://pypi.org/project/crayonmlx/)
+comes from [packaging/README.md](packaging/README.md); this README is the full GitHub guide.
+Changes to the PyPI description are included with the next published release.
 
 Keep application code in `src/crayonmlx/`, use small modules with clear responsibilities,
 and add tests for changes to data compatibility, job snapshots, or engine behavior.
 Run `uv run pytest` and `uv run ruff check src tests` before submitting changes.
 Do not commit downloaded models, generated images, application data, or access tokens.
-A project license has not yet been selected; add the chosen license before presenting
-this repository as a licensed open-source release.
+
+## License
+
+CrayonMLX is licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 Nikolay Nechaev.
+Model weights and third-party dependencies retain their respective licenses.
